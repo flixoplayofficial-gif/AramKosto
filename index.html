@@ -1,0 +1,626 @@
+29 Jul, 02:24
+
+
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>AramKosto Official</title>
+ <style>
+ :root {
+ --bg-color: #0f172a;
+ --card-bg: #1e293b;
+ --accent: #3b82f6;
+ --accent-hover: #2563eb;
+ --text: #f8fafc;
+ --text-muted: #94a3b8;
+ --danger: #ef4444;
+ }
+
+ * {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ }
+
+ body {
+ background-color: var(--bg-color);
+ color: var(--text);
+ min-height: 100vh;
+ }
+
+ /* Loading Screen */
+ #loader-wrapper {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background-color: #000;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ z-index: 9999;
+ transition: opacity 1s ease, visibility 1s ease;
+ }
+
+ .brand-title {
+ font-size: 3.5rem;
+ font-weight: 800;
+ letter-spacing: 5px;
+ background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ animation: fadeInScale 2s ease-in-out forwards;
+ opacity: 0;
+ }
+
+ .loading-bar {
+ width: 200px;
+ height: 4px;
+ background: #333;
+ margin-top: 20px;
+ border-radius: 2px;
+ overflow: hidden;
+ position: relative;
+ }
+
+ .loading-progress {
+ width: 0%;
+ height: 100%;
+ background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+ animation: load 2.5s ease-in-out forwards;
+ }
+
+ .loading-text {
+ margin-top: 10px;
+ font-size: 0.9rem;
+ color: var(--text-muted);
+ }
+
+ @keyframes fadeInScale {
+ 0% { opacity: 0; transform: scale(0.8); }
+ 100% { opacity: 1; transform: scale(1); }
+ }
+
+ @keyframes load {
+ 0% { width: 0%; }
+ 100% { width: 100%; }
+ }
+
+ /* Navigation */
+ header {
+ background-color: var(--card-bg);
+ padding: 1rem 2rem;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+ position: sticky;
+ top: 0;
+ z-index: 100;
+ }
+
+ .logo {
+ font-size: 1.5rem;
+ font-weight: bold;
+ color: var(--accent);
+ }
+
+ nav button {
+ background: transparent;
+ border: none;
+ color: var(--text);
+ padding: 0.5rem 1rem;
+ margin-left: 0.5rem;
+ cursor: pointer;
+ font-size: 1rem;
+ border-radius: 5px;
+ transition: 0.3s;
+ }
+
+ nav button:hover, nav button.active {
+ background-color: var(--accent);
+ }
+
+ /* Main Content */
+ .container {
+ max-width: 1000px;
+ margin: 2rem auto;
+ padding: 0 1rem;
+ }
+
+ .tab-content {
+ display: none;
+ background: var(--card-bg);
+ padding: 2rem;
+ border-radius: 12px;
+ box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+ }
+
+ .tab-content.active {
+ display: block;
+ }
+
+ /* Forms */
+ .form-group {
+ margin-bottom: 1.2rem;
+ }
+
+ .form-group label {
+ display: block;
+ margin-bottom: 0.5rem;
+ color: var(--text-muted);
+ }
+
+ .form-group input, .form-group textarea {
+ width: 100%;
+ padding: 0.8rem;
+ border-radius: 6px;
+ border: 1px solid #334155;
+ background: #0f172a;
+ color: #fff;
+ font-size: 1rem;
+ }
+
+ .btn {
+ background-color: var(--accent);
+ color: white;
+ border: none;
+ padding: 0.8rem 1.5rem;
+ border-radius: 6px;
+ cursor: pointer;
+ width: 100%;
+ font-size: 1rem;
+ font-weight: bold;
+ transition: 0.3s;
+ }
+
+ .btn:hover {
+ background-color: var(--accent-hover);
+ }
+
+ .btn-danger {
+ background-color: var(--danger);
+ }
+
+ .btn-danger:hover {
+ background-color: #dc2626;
+ }
+
+ .toggle-auth {
+ margin-top: 1rem;
+ text-align: center;
+ color: var(--accent);
+ cursor: pointer;
+ text-decoration: underline;
+ }
+
+ /* Profile Styles */
+ .profile-card {
+ text-align: center;
+ }
+
+ .avatar-container {
+ position: relative;
+ width: 150px;
+ height: 150px;
+ margin: 0 auto 1.5rem;
+ }
+
+ .avatar {
+ width: 100%;
+ height: 100%;
+ border-radius: 50%;
+ object-fit: cover;
+ border: 3px solid var(--accent);
+ }
+
+ .avatar-upload {
+ margin-top: 1rem;
+ }
+
+ .profile-actions {
+ display: flex;
+ flex-direction: column;
+ gap: 1rem;
+ max-width: 300px;
+ margin: 1.5rem auto 0;
+ }
+
+ /* Videos Grid */
+ .videos-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+ gap: 1.5rem;
+ margin-top: 1rem;
+ }
+
+ .video-card {
+ background: #0f172a;
+ border-radius: 8px;
+ overflow: hidden;
+ border: 1px solid #334155;
+ }
+
+ .video-card video {
+ width: 100%;
+ height: 200px;
+ object-fit: cover;
+ }
+
+ .video-info {
+ padding: 1rem;
+ }
+
+ .video-info h3 {
+ font-size: 1.1rem;
+ margin-bottom: 0.5rem;
+ }
+
+ /* Notification */
+ .notification {
+ position: fixed;
+ bottom: 20px;
+ right: 20px;
+ background: var(--accent);
+ color: white;
+ padding: 1rem 1.5rem;
+ border-radius: 8px;
+ box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+ display: none;
+ z-index: 1000;
+ }
+
+ .about-text {
+ line-height: 1.8;
+ font-size: 1.05rem;
+ color: #cbd5e1;
+ text-align: justify;
+ }
+ </style>
+</head>
+<body>
+
+ <!-- Loading Screen -->
+ <div id="loader-wrapper">
+ <div class="brand-title">ARAMKOSTO</div>
+ <div class="loading-bar">
+ <div class="loading-progress"></div>
+ </div>
+ <div class="loading-text">Կայքը բեռնվում է...</div>
+ </div>
+
+ <!-- Header / Navbar -->
+ <header>
+ <div class="logo">AramKosto</div>
+ <nav>
+ <button onclick="showTab('about')">AramKosto-ի մասին</button>
+ <button onclick="showTab('videos')">Բոլոր տեսանյութերը</button>
+ <button id="upload-tab-btn" style="display:none;" onclick="showTab('upload')">Բեռնել տեսանյութ</button>
+ <button id="auth-btn" onclick="showTab('auth')">Գրանցում</button>
+ </nav>
+ </header>
+
+ <!-- Main Container -->
+ <div class="container">
+
+ <!-- About Section -->
+ <div id="about" class="tab-content active">
+ <h2 style="margin-bottom: 1rem; color: var(--accent);">AramKosto-ի մասին</h2>
+ <p class="about-text">
+ Արամ Կոստանյանը, ով լայն հասարակությանը հայտնի է AramKosto բեմական անունով, ծնվել է 2007 թվականի մարտի 29-ին։ Արմավիրի մարզի Լուկաշին գյուղում մեծացած Արամը դեռ մանկուց ցուցաբերել է սեր և նվիրվածություն երաժշտության հանդեպ, ինչն էլ դարձել է նրա ստեղծագործական ուղու հիմքը։<br><br>
+ Կրթությունը ստացել է Հունան Ավետիսյանի անվան միջնակարգ դպրոցում։ Ստեղծագործական հետաքրքրությունների շրջանակը Արամի մոտ ընդլայնվել է ժամանակի ընթացքում՝ ներառելով բլոգեռությունը, տեսանյութերի մոնտաժը և երաժշտական նախագծերը։ Հենց այս հետաքրքրությունների համադրությամբ էլ սկսվեց Արամի ինքնատիպ և հաջողակ ուղին։ Այսօր AramKosto-ն ոչ միայն ստեղծագործում է երաժշտության ասպարեզում, այլև իր տաղանդը դրսևորում է թվային հարթակներում՝ կառուցելով սեփական ոճն ու ճանապարհը մեդիա ոլորտում։
+ </p>
+ </div>
+
+ <!-- Auth Section (Register / Login) -->
+ <div id="auth" class="tab-content">
+ <!-- Register Form -->
+ <div id="register-form-box">
+ <h2 style="margin-bottom: 1.5rem;">Գրանցում</h2>
+ <form id="register-form" onsubmit="handleRegister(event)">
+ <div class="form-group">
+ <label>Անուն Ազգանուն</label>
+ <input type="text" id="reg-name" required placeholder="Օրինակ՝ Արամ Կոստանյան">
+ </div>
+ <div class="form-group">
+ <label>Գաղտնաբառ</label>
+ <input type="password" id="reg-pass" required>
+ </div>
+ <div class="form-group">
+ <label>Կրկնել գաղտնաբառը</label>
+ <input type="password" id="reg-pass-repeat" required>
+ </div>
+ <button type="submit" class="btn">Գրանցվել</button>
+ </form>
+ <div class="toggle-auth" onclick="toggleAuthMode('login')">Արդեն ունեմ հաշիվ</div>
+ </div>
+
+ <!-- Login Form -->
+ <div id="login-form-box" style="display: none;">
+ <h2 style="margin-bottom: 1.5rem;">Մուտք</h2>
+ <form id="login-form" onsubmit="handleLogin(event)">
+ <div class="form-group">
+ <label>Անուն Ազգանուն</label>
+ <input type="text" id="login-name" required placeholder="Aram Kostanyan">
+ </div>
+ <div class="form-group">
+ <label>Գաղտնաբառ</label>
+ <input type="password" id="login-pass" required>
+ </div>
+ <button type="submit" class="btn">Մուտք գործել</button>
+ </form>
+ <div class="toggle-auth" onclick="toggleAuthMode('register')">Չունեմ հաշիվ, գրանցվել</div>
+ </div>
+ </div>
+
+ <!-- Profile Section -->
+ <div id="profile" class="tab-content">
+ <div class="profile-card">
+ <div class="avatar-container">
+ <img id="profile-img" src="https://via.placeholder.com/150" class="avatar" alt="Profile Picture">
+ </div>
+ <h2 id="user-display-name">Անուն Ազգանուն</h2>
+ <p id="admin-badge" style="color: var(--accent); display:none; font-weight:bold; margin-top:5px;">[ Ադմինիստրատոր ]</p>
+
+ <div class="profile-actions">
+ <label class="btn" style="background-color: #475569; cursor: pointer;">
+ Փոխել նկարը
+ <input type="file" accept="image/*" onchange="changeAvatar(event)" style="display: none;">
+ </label>
+ <button class="btn" onclick="changePassword()">Փոխել գաղտնաբառը</button>
+ <button class="btn" style="background: #eab308;" onclick="logout()">Դուրս գալ հաշվից</button>
+ <button class="btn btn-danger" onclick="deleteAccount()">Ջնջել հաշիվը</button>
+ </div>
+ </div>
+ </div>
+
+ <!-- All Videos Section -->
+ <div id="videos" class="tab-content">
+ <h2>Բոլոր տեսանյութերը</h2>
+ <div class="videos-grid" id="videos-container">
+ <p id="no-videos" style="color: var(--text-muted); grid-column: 1/-1;">Տեսանյութեր դեռ չկան:</p>
+ </div>
+ </div>
+
+ <!-- Admin Upload Section -->
+ <div id="upload" class="tab-content">
+ <h2>Բեռնել տեսանյութ (Ադմին)</h2>
+ <form onsubmit="handleVideoUpload(event)">
+ <div class="form-group" style="margin-top: 1rem;">
+ <label>Ընտրել տեսանյութը գալերեայից</label>
+ <input type="file" id="video-file" accept="video/*" required>
+ </div>
+ <div class="form-group">
+ <label>Տեսանյութի վերնագիրը</label>
+ <input type="text" id="video-title" required placeholder="Գրեք վերնագիրը">
+ </div>
+ <div class="form-group">
+ <label>Ընտրել տեսանյութի նկարը (Ընտրովի)</label>
+ <input type="file" id="video-poster" accept="image/*">
+ </div>
+ <button type="submit" class="btn">Բեռնել տեսանյութը</button>
+ </form>
+ </div>
+
+ </div>
+
+ <!-- Notification element -->
+ <div id="notification" class="notification"></div>
+
+ <script>
+ // Intro Animation Hide
+ window.addEventListener('DOMContentLoaded', () => {
+ setTimeout(() => {
+ const loader = document.getElementById('loader-wrapper');
+ loader.style.opacity = '0';
+ setTimeout(() => {
+ loader.style.display = 'none';
+ }, 1000);
+ }, 2500);
+ renderVideos();
+ });
+
+ // App State
+ let currentUser = null;
+ let videos = [];
+
+ // Tab Switching
+ function showTab(tabId) {
+ document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+ document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+ 
+ document.getElementById(tabId).classList.add('active');
+ }
+
+ function toggleAuthMode(mode) {
+ if(mode === 'login') {
+ document.getElementById('register-form-box').style.display = 'none';
+ document.getElementById('login-form-box').style.display = 'block';
+ } else {
+ document.getElementById('register-form-box').style.display = 'block';
+ document.getElementById('login-form-box').style.display = 'none';
+ }
+ }
+
+ // Notifications
+ function notify(message) {
+ const notif = document.getElementById('notification');
+ notif.innerText = message;
+ notif.style.display = 'block';
+ setTimeout(() => {
+ notif.style.display = 'none';
+ }, 3000);
+ }
+
+ // Registration Logic
+ function handleRegister(e) {
+ e.preventDefault();
+ const name = document.getElementById('reg-name').value;
+ const pass = document.getElementById('reg-pass').value;
+ const passRep = document.getElementById('reg-pass-repeat').value;
+
+ if (pass !== passRep) {
+ alert('Գաղտնաբառերը չեն համընկնում');
+ return;
+ }
+
+ loginUser({
+ name: name,
+ pass: pass,
+ isAdmin: (name === 'Aram Kostanyan' && pass === 'AramAren'),
+ avatar: 'https://via.placeholder.com/150'
+ });
+
+ notify('Դուք հաջողությամբ գրանցվեցիք');
+ }
+
+ // Login Logic
+ function handleLogin(e) {
+ e.preventDefault();
+ const name = document.getElementById('login-name').value;
+ const pass = document.getElementById('login-pass').value;
+
+ const isAdmin = (name === 'Aram Kostanyan' && pass === 'AramAren');
+
+ loginUser({
+ name: name,
+ pass: pass,
+ isAdmin: isAdmin,
+ avatar: 'https://via.placeholder.com/150'
+ });
+
+ notify('Ավտոմատ ծանուցում. Դուք հաջողությամբ մուտք գործեցիք համակարգ');
+ }
+
+ function loginUser(user) {
+ currentUser = user;
+ 
+ // Update UI for logged in state
+ const authBtn = document.getElementById('auth-btn');
+ authBtn.innerText = 'Իմ պրոֆիլը';
+ authBtn.onclick = () => showTab('profile');
+
+ document.getElementById('user-display-name').innerText = user.name;
+ document.getElementById('profile-img').src = user.avatar;
+
+ if(user.isAdmin) {
+ document.getElementById('upload-tab-btn').style.display = 'inline-block';
+ document.getElementById('admin-badge').style.display = 'block';
+ } else {
+ document.getElementById('upload-tab-btn').style.display = 'none';
+ document.getElementById('admin-badge').style.display = 'none';
+ }
+
+ renderVideos();
+ showTab('profile');
+ }
+
+ function logout() {
+ currentUser = null;
+ const authBtn = document.getElementById('auth-btn');
+ authBtn.innerText = 'Գրանցում';
+ authBtn.onclick = () => showTab('auth');
+ document.getElementById('upload-tab-btn').style.display = 'none';
+ 
+ showTab('auth');
+ notify('Դուք դուրս եկաք հաշվից');
+ renderVideos();
+ }
+
+ function deleteAccount() {
+ if(confirm('Ուզու՞մ եք ջնջել հաշիվը:')) {
+ logout();
+ notify('Հաշիվը ջնջված է');
+ }
+ }
+
+ function changePassword() {
+ const newPass = prompt('Գրեք նոր գաղտնաբառը. Multiple choices');
+ if(newPass) {
+ currentUser.pass = newPass;
+ notify('Գաղտնաբառը հաջողությամբ փոխվեց');
+ }
+ }
+
+ function changeAvatar(e) {
+ const file = e.target.files[0];
+ if(file) {
+ const reader = new FileReader();
+ reader.onload = function(evt) {
+ document.getElementById('profile-img').src = evt.target.result;
+ currentUser.avatar = evt.target.result;
+ notify('Պրոֆիլի նկարը փոխվեց');
+ };
+ reader.readAsDataURL(file);
+ }
+ }
+
+ // Admin Video Upload
+ function handleVideoUpload(e) {
+ e.preventDefault();
+ if(!currentUser || !currentUser.isAdmin) return;
+
+ const videoFile = document.getElementById('video-file').files[0];
+ const title = document.getElementById('video-title').value;
+ const posterFile = document.getElementById('video-poster').files[0];
+
+ if(!videoFile) return;
+
+ const videoUrl = URL.createObjectURL(videoFile);
+ let posterUrl = '';
+ 
+ if(posterFile) {
+ posterUrl = URL.createObjectURL(posterFile);
+ }
+
+ videos.push({
+ id: Date.now(),
+ title: title,
+ src: videoUrl,
+ poster: posterUrl
+ });
+
+ notify('Տեսանյութը հաջողությամբ բեռնվեց');
+ e.target.reset();
+ renderVideos();
+ showTab('videos');
+ }
+
+ function deleteVideo(id) {
+ videos = videos.filter(v => v.id !== id);
+ renderVideos();
+ notify('Տեսանյութը ջնջվեց');
+ }
+
+ function renderVideos() {
+ const container = document.getElementById('videos-container');
+ container.innerHTML = '';
+
+ if(videos.length === 0) {
+ container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Տեսանյութեր դեռ չկան:</p>';
+ return;
+ }
+
+ videos.forEach(v => {
+ const card = document.createElement('div');
+ card.className = 'video-card';
+ card.innerHTML = `
+ <video controls poster="${v.poster}">
+ <source src="${v.src}" type="video/mp4">
+ </video>
+ <div class="video-info">
+ <h3>${v.title}</h3>
+ ${currentUser && currentUser.isAdmin ? `<button class="btn btn-danger" onclick="deleteVideo(${v.id})">Ջնջել</button>` : ''}
+ </div>
+ `;
+ container.appendChild(card);
+ });
+ }
+ </script>
+</body>
+</html>
